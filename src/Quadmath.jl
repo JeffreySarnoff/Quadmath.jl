@@ -11,7 +11,7 @@ import Base: (*), +, -, /,  <, <=, ==, ^, convert,
           acos, acosh, asin, asinh, atan, atanh, cosh, cos, sincos,
           exp, expm1, log, log2, log10, log1p, sin, sinh, sqrt,
           tan, tanh,
-          ceil, floor, trunc, round, fma, decompose,
+          ceil, floor, trunc, round, fma, decompose, rem, mod,
           copysign, flipsign, max, min, hypot, abs,
           ldexp, frexp, modf, nextfloat, typemax, typemin, eps,
           isinf, isnan, isfinite, isinteger,
@@ -344,6 +344,9 @@ hypot(x::Float128, y::Float128) =
 atan(x::Float128, y::Float128) =
     Float128(@ccall(libquadmath.atan2q(x::Cfloat128, y::Cfloat128)::Cfloat128))
 sincos(x::Float128) = (sin(x), cos(x))
+
+rem(x::Float128, y::Float128) = Float128(@ccall(libquadmath.fmodq(x::Cfloat128, y::Cfloat128)::Cfloat128))
+mod(x::Float128, y::Float128) = signbit(x) === signbit(y) ? rem(x,y) : y + rem(x,y)
 
 ## misc
 @static if !Sys.iswindows()
